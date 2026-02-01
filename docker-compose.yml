@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: medlibrary-postgres
+    environment:
+      POSTGRES_DB: medlibrary
+      POSTGRES_USER: meduser
+      POSTGRES_PASSWORD: medpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: medlibrary-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_USER: meduser
+      DB_PASSWORD: medpass
+      JWT_SECRET: super-secret-prod-key
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
